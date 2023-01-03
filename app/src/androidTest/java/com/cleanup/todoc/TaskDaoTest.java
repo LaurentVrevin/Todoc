@@ -33,9 +33,6 @@ public class TaskDaoTest {
     private static Project PROJECT_DEMO = new Project(1, "Project test",0xFFEADAD1);
     private static Task TASK_DEMO = new Task(PROJECT_DEMO.getId(), PROJECT_ID,"Task test", new Date().getTime());
 
-
-
-
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
@@ -44,7 +41,6 @@ public class TaskDaoTest {
     public void initDB() throws Exception {
         this.todocDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().getContext(),
                 TodocDatabase.class).allowMainThreadQueries().build();
-
     }
 
     @After
@@ -70,10 +66,28 @@ public class TaskDaoTest {
     }
     @Test
     public void insertAndGetTasks() throws Exception {
+        //insère un projet dans la bdd
         this.todocDatabase.projectDao().createProject(PROJECT_DEMO);
+        //insère une tâche dans la bdd avec insertTask pour la classe TaskDao
         this.todocDatabase.taskDao().insertTask(TASK_DEMO);
+        // Récupère la liste des tâches de la base de données en utilisant getTask de la classe TaskDao
         List<Task> tasks = LiveDataTestUtil.getValue(this.todocDatabase.taskDao().getTasks(PROJECT_ID));
+        //Confirme qu'il y a bien une tâche dans la liste
         assertTrue(tasks.size() == 1);
+    }
+
+    @Test
+    public void insertAndDeleteTask() throws InterruptedException {
+        //Insérer un projet
+        this.todocDatabase.projectDao().createProject(PROJECT_DEMO);
+        //Insérer une tâche
+        this.todocDatabase.taskDao().insertTask(TASK_DEMO);
+        List<Task> taskadded = LiveDataTestUtil.getValue(this.todocDatabase.taskDao().getTasks(PROJECT_ID));
+        //supprimer la tâche
+        this.todocDatabase.taskDao().deleteTask(TASK_DEMO.getId());
+
+        //Vérifier que la tâche a bien été supprimée
+
     }
 
 }
