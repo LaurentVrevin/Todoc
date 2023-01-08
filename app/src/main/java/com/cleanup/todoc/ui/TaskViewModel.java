@@ -36,11 +36,14 @@ public class TaskViewModel extends ViewModel {
         currentProject= projectDataSource.getProject(projectId);
     }
     //FOR PROJECTS
-    public LiveData<List<Project>> getProject(){
-        return this.currentProject;
+    public LiveData<List<Project>> getAllProjects(){
+        return projectDataSource.getAllProject();
     }
 
     //FOR TASKS
+    public LiveData<List<Task>>getAllTasks(){
+        return taskDataSource.getAllTask();
+    }
     public LiveData<List<Task>> getTask(long projectId){
         return taskDataSource.getTask(projectId);
     }

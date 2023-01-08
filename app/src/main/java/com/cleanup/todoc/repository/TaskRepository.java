@@ -13,7 +13,8 @@ public class TaskRepository {
     public TaskRepository(TaskDao taskDao) { this.taskDao = taskDao; }
 
     //GET
-
+    public LiveData<List<Task>> getAllTask() {return this.taskDao.getAllTasks();
+    }
     public LiveData<List<Task>> getTask(long projectId){ return this.taskDao.getTasks(projectId); }
 
     //CREATE
@@ -23,6 +24,7 @@ public class TaskRepository {
 
     //DELETE
     public void deleteTask(long taskId){taskDao.deleteTask(taskId);}
+
 
 
 }

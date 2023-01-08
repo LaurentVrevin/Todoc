@@ -14,12 +14,12 @@ import java.util.List;
 public interface ProjectDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long createProject(Project project);
+     long createProject(Project project);
 
-    @Query("SELECT * FROM project")
-    public LiveData<List<Project>>getAllProjects();
+    @Query("SELECT * FROM Project")
+     LiveData<List<Project>> getAllProjects();
 
     @Query("SELECT * FROM Project WHERE id=:projectId")
-    public LiveData<List<Project>> getProject(long projectId);
+     LiveData<List<Project>> getProject(long projectId);
 
 }

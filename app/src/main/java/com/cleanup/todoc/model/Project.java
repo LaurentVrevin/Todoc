@@ -4,6 +4,7 @@ package com.cleanup.todoc.model;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -23,12 +24,14 @@ public class Project {
     /**
      * The name of the project
      */
+    @ColumnInfo
     @NonNull
     private final String name;
 
     /**
      * The hex (ARGB) code of the color associated to the project
      */
+    @ColumnInfo
     @ColorInt
     private final int color;
 
