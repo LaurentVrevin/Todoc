@@ -15,17 +15,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cleanup.todoc.R;
-import com.cleanup.todoc.injection.ViewModelFactory;
+
+import com.cleanup.todoc.database.TodocDatabase;
+
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.repository.ProjectRepository;
+import com.cleanup.todoc.repository.TaskRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.concurrent.Executors;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -34,10 +41,14 @@ import java.util.Date;
  * @author Gaëtan HERFRAY
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
+
+    //ViewModel
+    private TaskViewModel taskViewModel;
+
     /**
      * List of all projects available in the application
      */
-    private final Project[] allProjects = Project.getAllProjects();
+    private Project[] allProjects = Project.getAllProjects();
 
     /**
      * List of all current tasks of the application
@@ -108,12 +119,32 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 showAddTaskDialog();
             }
         });
+        configureViewModel();
     }
-
     //Je configure le viewModel
     private void configureViewModel(){
 
+        // On crée une instance de la base de données en utilisant la méthode getInstance pour obtenir une référence unique
+        TodocDatabase db = TodocDatabase.getInstance(this);
+
+        // On crée une instance du ViewModel en lui passant les repositories pour les tâches et les projets, ainsi qu'un thread d'exécution
+        taskViewModel = new TaskViewModel(new TaskRepository(db.taskDao()), new ProjectRepository(db.projectDao()), Executors.newSingleThreadExecutor());
+
+        // On appelle la méthode init pour initialiser le ViewModel
+        taskViewModel.init();
+
+        // On observe les tâches pour mettre à jour l'adapteur de la liste de tâches
+        taskViewModel.getTasks().observe(this, tasks -> adapter.updateTasks(tasks));
+
+        // On observe les projets pour mettre à jour la liste de projets dans le Spinner du formulaire d'ajout de tâches
+        taskViewModel.getProjects().observe(this, projects -> {
+            allProjects = projects.toArray(new Project[0]);
+            if (dialogSpinner != null) {
+                dialogSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, allProjects));
+            }
+        });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,7 +165,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         } else if (id == R.id.filter_recent_first) {
             sortMethod = SortMethod.RECENT_FIRST;
         }
-
         updateTasks();
 
         return super.onOptionsItemSelected(item);
@@ -142,7 +172,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
+        //tasks.remove(task);
+        /** delete task ok*/
+        taskViewModel.deleteTask(task);
         updateTasks();
     }
 
@@ -215,7 +247,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        tasks.add(task);
+        //tasks.add(task);
+        /** INSERT TASK OK*/
+        taskViewModel.createTask(task);
         updateTasks();
     }
 
@@ -223,6 +257,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Updates the list of tasks in the UI
      */
     private void updateTasks() {
+        taskViewModel.getTasks().observe(this, tasks -> {
+        // update UI
         if (tasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
@@ -246,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
             adapter.updateTasks(tasks);
         }
+        });
     }
 
     /**

@@ -21,6 +21,7 @@ public class Task {
      * The unique identifier of the task
      */
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name="id")
     private long id;
 
     /**
@@ -39,11 +40,13 @@ public class Task {
 
     @SuppressWarnings("NullableProblems")
     @NonNull
+    @ColumnInfo(name="name")
     private String name;
 
     /**
      * The timestamp when the task has been created
      */
+    @ColumnInfo(name="timestamp")
     private long creationTimestamp;
 
     public long getCreationTimestamp() {

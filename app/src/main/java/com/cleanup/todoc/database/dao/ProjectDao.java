@@ -16,10 +16,14 @@ public interface ProjectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
      long createProject(Project project);
 
-    @Query("SELECT * FROM Project")
-     LiveData<List<Project>> getAllProjects();
+    @Query("SELECT * FROM projects")
+     LiveData<List<Project>> getProjects();
 
-    @Query("SELECT * FROM Project WHERE id=:projectId")
-     LiveData<List<Project>> getProject(long projectId);
+
+    @Query("SELECT * FROM projects ORDER BY name ASC")
+    LiveData<List<Project>>getProjectByAZ();
+
+    @Query("SELECT * FROM projects ORDER BY name DESC")
+    LiveData<List<Project>>getProjectByZA();
 
 }

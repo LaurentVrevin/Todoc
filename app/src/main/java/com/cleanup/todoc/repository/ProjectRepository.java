@@ -16,12 +16,14 @@ public class ProjectRepository {
     }
 
     // GET PROJECT
-
-    public LiveData<List<Project>>getAllProject(){
-        return this.projectDao.getAllProjects();
+    //On récupère tous les projects
+    public LiveData<List<Project>> getProjects(){
+        return this.projectDao.getProjects();
     }
 
-    public LiveData<List<Project>> getProject(long id){
-        return this.projectDao.getProject(id);
+    //CREATE
+    public void createProject(Project project){ projectDao.createProject(project);
     }
+
+
 }

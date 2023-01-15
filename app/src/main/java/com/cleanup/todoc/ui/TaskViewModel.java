@@ -1,6 +1,6 @@
 package com.cleanup.todoc.ui;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -20,41 +20,40 @@ public class TaskViewModel extends ViewModel {
     private final Executor executor;
 
     //DATA
-    private LiveData<List<Project>>currentProject;
+    private LiveData<List<Project>> currentProject;
 
 
     public TaskViewModel(TaskRepository taskDataSource, ProjectRepository projectDataSource, Executor executor) {
         this.taskDataSource = taskDataSource;
         this.projectDataSource = projectDataSource;
         this.executor = executor;
+
     }
 
-    public void init(long projectId){
-        if(this.currentProject!=null){
-            return;
+    //initialise le viewmodel dès que l'activité est créée.
+    //Vérification si le project existe déjà dans le viewmodel (rotation, etc..)
+    public void init(){
+        if(currentProject==null){
+            currentProject= projectDataSource.getProjects();
         }
-        currentProject= projectDataSource.getProject(projectId);
-    }
-    //FOR PROJECTS
-    public LiveData<List<Project>> getAllProjects(){
-        return projectDataSource.getAllProject();
     }
 
-    //FOR TASKS
-    public LiveData<List<Task>>getAllTasks(){
-        return taskDataSource.getAllTask();
-    }
-    public LiveData<List<Task>> getTask(long projectId){
-        return taskDataSource.getTask(projectId);
+    @Nullable
+    public LiveData<List<Project>> getProjects() {
+        return currentProject;
     }
 
-    public void createTask(long id, long projectId, @NonNull String name, long creationTimestamp){
-        executor.execute(()->{
-            taskDataSource.createTask(new Task(id, projectId, name, creationTimestamp));
-        });
-    }
-    public void deleteTask(long taskId){
-        executor.execute(() ->taskDataSource.deleteTask(taskId));
+    public LiveData<List<Task>> getTasks() {
+        return taskDataSource.getTasks();
     }
 
+    public void createTask(Task task) {
+        executor.execute(() -> taskDataSource.createTask(task));
+    }
+
+    public void deleteTask(Task task) {
+        executor.execute(() -> taskDataSource.deleteTask(task));
+    }
 }
+
+
