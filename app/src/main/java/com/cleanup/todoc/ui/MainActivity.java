@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
         });
         configureViewModel();
+        updateTasks();
     }
     //Je configure le viewModel
     private void configureViewModel(){
@@ -136,13 +137,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         // On observe les tâches pour mettre à jour l'adapteur de la liste de tâches
         taskViewModel.getTasks().observe(this, tasks -> adapter.updateTasks(tasks));
 
-        // On observe les projets pour mettre à jour la liste de projets dans le Spinner du formulaire d'ajout de tâches
+        /*// On observe les projets pour mettre à jour la liste de projets dans le Spinner du formulaire d'ajout de tâches
         taskViewModel.getProjects().observe(this, projects -> {
             allProjects = projects.toArray(new Project[0]);
             if (dialogSpinner != null) {
                 dialogSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, allProjects));
             }
-        });
+        })*/;
     }
 
 
@@ -259,11 +260,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void updateTasks() {
         taskViewModel.getTasks().observe(this, tasks -> {
         // update UI
-        if (tasks.size() == 0) {
+        if (tasks.size() ==0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
         } else {
-            lblNoTasks.setVisibility(View.GONE);
+            lblNoTasks.setVisibility(View.INVISIBLE);
             listTasks.setVisibility(View.VISIBLE);
             switch (sortMethod) {
                 case ALPHABETICAL:
