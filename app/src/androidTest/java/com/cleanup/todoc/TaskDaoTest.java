@@ -38,7 +38,7 @@ public class TaskDaoTest {
 
     @Before
 
-    public void initDB() throws Exception {
+    public void initDb() throws Exception {
         this.todocDatabase = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().getContext(),
                 TodocDatabase.class).allowMainThreadQueries().build();
     }
@@ -54,7 +54,7 @@ public class TaskDaoTest {
         // Les valeurs que j'ajoute : 1, "Project test",0xFFEADAD1
         this.todocDatabase.projectDao().createProject(PROJECT_DEMO);
         // Récupère la liste des projets de la base de données en utilisant la méthode getProject de la classe ProjectDao
-        List<Project> projects = LiveDataTestUtil.getValue(this.todocDatabase.projectDao().getProjects(PROJECT_ID));
+        List<Project> projects = LiveDataTestUtil.getValue(this.todocDatabase.projectDao().getProjects());
 
         Project project = null;
         // Si la liste de projets n'est pas vide, récupère le premier élément de la liste et le stocke dans la variable project
@@ -82,12 +82,14 @@ public class TaskDaoTest {
         this.todocDatabase.projectDao().createProject(PROJECT_DEMO);
         //Insérer une tâche
         this.todocDatabase.taskDao().insertTask(TASK_DEMO);
+        //Je récupère la liste des tâches via la bdd  en utilisant getTask de la classe TaskDao
         List<Task> taskadded = LiveDataTestUtil.getValue(this.todocDatabase.taskDao().getTaskByProject(PROJECT_ID));
+        assertTrue(taskadded.size() == 1);
         //supprimer la tâche
-        this.todocDatabase.taskDao().deleteTask(TASK_DEMO.getId());
-
+        this.todocDatabase.taskDao().deleteTask(TASK_DEMO);
+        List<Task> taskdeleted= LiveDataTestUtil.getValue(this.todocDatabase.taskDao().getTaskByProject(PROJECT_ID));
         //Vérifier que la tâche a bien été supprimée
-
+        assertTrue(taskdeleted.size()==0);
     }
 
 }
