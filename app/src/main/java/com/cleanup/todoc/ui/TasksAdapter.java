@@ -34,6 +34,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     @NonNull
     private final DeleteTaskListener deleteTaskListener;
 
+
     /**
      * Instantiates a new TasksAdapter.
      *

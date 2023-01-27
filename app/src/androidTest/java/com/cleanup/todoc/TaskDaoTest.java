@@ -1,5 +1,6 @@
 package com.cleanup.todoc;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
@@ -29,9 +30,10 @@ public class TaskDaoTest {
     //DATA SET FOR TEST
     //set data for test
 
-    private static long PROJECT_ID = 1;
-    private static Project PROJECT_DEMO = new Project(1, "Project test",0xFFEADAD1);
-    private static Task TASK_DEMO = new Task(PROJECT_DEMO.getId(), PROJECT_ID,"Task test", new Date().getTime());
+    private static final long  PROJECT_ID = 1;
+    private static final Project PROJECT_DEMO = new Project(PROJECT_ID, "Project test",0xFFEADAD1);
+    private static final Task TASK_DEMO_01 = new Task(1, PROJECT_ID,"Task test 01", new Date().getTime());
+    private static final Task TASK_DEMO_02 = new Task(2, PROJECT_ID,"Task test 02", new Date().getTime());
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -51,29 +53,30 @@ public class TaskDaoTest {
     @Test
     public void insertAndGetProject() throws Exception {
         // Insère un projet dans la base de données en appelant la méthode createProject de la classe ProjectDao
-        // Les valeurs que j'ajoute : 1, "Project test",0xFFEADAD1
+        // Les valeurs que j'ajoute : "1, "Project test",0xFFEADAD1"
         this.todocDatabase.projectDao().createProject(PROJECT_DEMO);
         // Récupère la liste des projets de la base de données en utilisant la méthode getProject de la classe ProjectDao
         List<Project> projects = LiveDataTestUtil.getValue(this.todocDatabase.projectDao().getProjects());
 
-        Project project = null;
-        // Si la liste de projets n'est pas vide, récupère le premier élément de la liste et le stocke dans la variable project
-        if (!projects.isEmpty()) {
-            project = projects.get(0);
-        }
-        //Vérifie maintenant si project n'est pas null et que le nom et son Id correspondent, alors renvoie true.
-        assertTrue(project != null && project.getName().equals(PROJECT_DEMO.getName()) && project.getId() == PROJECT_ID);
+        Project project = projects.get(0);
+
+        //Vérifie maintenant si le nom du projet et son Id correspondent, alors renvoie true.
+        assertTrue( project.getName().equals(PROJECT_DEMO.getName()) && project.getId() == PROJECT_ID);
     }
+
     @Test
     public void insertAndGetTasks() throws Exception {
+        List<Task> tasks = LiveDataTestUtil.getValue(this.todocDatabase.taskDao().getTasks());
+        assertEquals(0, tasks.size());
         //insère un projet dans la bdd
         this.todocDatabase.projectDao().createProject(PROJECT_DEMO);
         //insère une tâche dans la bdd avec insertTask pour la classe TaskDao
-        this.todocDatabase.taskDao().insertTask(TASK_DEMO);
+        this.todocDatabase.taskDao().insertTask(TASK_DEMO_01);
+        this.todocDatabase.taskDao().insertTask(TASK_DEMO_02);
         // Récupère la liste des tâches de la base de données en utilisant getTask de la classe TaskDao
-        List<Task> tasks = LiveDataTestUtil.getValue(this.todocDatabase.taskDao().getTaskByProject(PROJECT_ID));
+        List<Task> taskList = LiveDataTestUtil.getValue(this.todocDatabase.taskDao().getTasks());
         //Confirme qu'il y a bien une tâche dans la liste
-        assertTrue(tasks.size() == 1);
+        assertEquals(2, taskList.size());
     }
 
     @Test
@@ -81,15 +84,16 @@ public class TaskDaoTest {
         //Insérer un projet
         this.todocDatabase.projectDao().createProject(PROJECT_DEMO);
         //Insérer une tâche
-        this.todocDatabase.taskDao().insertTask(TASK_DEMO);
+        this.todocDatabase.taskDao().insertTask(TASK_DEMO_01);
         //Je récupère la liste des tâches via la bdd  en utilisant getTask de la classe TaskDao
         List<Task> taskadded = LiveDataTestUtil.getValue(this.todocDatabase.taskDao().getTaskByProject(PROJECT_ID));
         assertTrue(taskadded.size() == 1);
         //supprimer la tâche
-        this.todocDatabase.taskDao().deleteTask(TASK_DEMO);
+        this.todocDatabase.taskDao().deleteTask(TASK_DEMO_01);
         List<Task> taskdeleted= LiveDataTestUtil.getValue(this.todocDatabase.taskDao().getTaskByProject(PROJECT_ID));
         //Vérifier que la tâche a bien été supprimée
         assertTrue(taskdeleted.size()==0);
     }
+
 
 }

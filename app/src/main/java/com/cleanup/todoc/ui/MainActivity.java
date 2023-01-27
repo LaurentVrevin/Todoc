@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
         } else {
-            lblNoTasks.setVisibility(View.INVISIBLE);
+            lblNoTasks.setVisibility(View.GONE);
             listTasks.setVisibility(View.VISIBLE);
             switch (sortMethod) {
                 case ALPHABETICAL:
@@ -271,6 +271,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                     Collections.sort(tasks, new Task.TaskRecentComparator());
                     break;
                 case OLD_FIRST:
+                case NONE:
                     Collections.sort(tasks, new Task.TaskOldComparator());
                     break;
 

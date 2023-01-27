@@ -4,13 +4,17 @@ package com.cleanup.todoc;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cleanup.todoc.database.TodocDatabase;
 import com.cleanup.todoc.ui.MainActivity;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
+import static androidx.test.InstrumentationRegistry.getContext;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
@@ -22,6 +26,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -33,8 +39,20 @@ import androidx.test.runner.AndroidJUnit4;
  */
 @RunWith(AndroidJUnit4.class)
 public class MainActivityInstrumentedTest {
+
+    //FOR DATA
+
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
+
+    @Before
+    public void initDb() throws Exception {
+
+    }
+    @After
+    public void closeDB() throws Exception {
+        rule.getActivity().getApplicationContext().deleteDatabase("TodocDatabase.db");
+    }
 
     @Test
     public void addAndRemoveTask() {
@@ -62,7 +80,7 @@ public class MainActivityInstrumentedTest {
     }
 
     @Test
-    public void sortTasks() {
+    public void sortTasks() throws InterruptedException {
         MainActivity activity = rule.getActivity();
 
         onView(withId(R.id.fab_add_task)).perform(click());
@@ -74,6 +92,8 @@ public class MainActivityInstrumentedTest {
         onView(withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.txt_task_name)).perform(replaceText("hhh Tâche example"));
         onView(withId(android.R.id.button1)).perform(click());
+
+
 
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.lbl_task_name))
                 .check(matches(withText("aaa Tâche example")));

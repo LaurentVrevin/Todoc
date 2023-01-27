@@ -20,10 +20,6 @@ public interface ProjectDao {
      LiveData<List<Project>> getProjects();
 
 
-    @Query("SELECT * FROM projects ORDER BY name ASC")
-    LiveData<List<Project>>getProjectByAZ();
 
-    @Query("SELECT * FROM projects ORDER BY name DESC")
-    LiveData<List<Project>>getProjectByZA();
 
 }
