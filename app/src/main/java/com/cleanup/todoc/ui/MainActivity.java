@@ -15,15 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cleanup.todoc.R;
-
 import com.cleanup.todoc.database.TodocDatabase;
-
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repository.ProjectRepository;
@@ -42,37 +38,31 @@ import java.util.concurrent.Executors;
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
-    //ViewModel
-    private TaskViewModel taskViewModel;
-
-    /**
-     * List of all projects available in the application
-     */
-    private Project[] allProjects = Project.getAllProjects();
-
     /**
      * List of all current tasks of the application
      */
     @NonNull
     private final ArrayList<Task> tasks = new ArrayList<>();
-
     /**
      * The adapter which handles the list of tasks
      */
     private final TasksAdapter adapter = new TasksAdapter(tasks, this);
-
     /**
-     * The sort method to be used to display tasks
+     * List of all projects available in the application
      */
-    @NonNull
-    private SortMethod sortMethod = SortMethod.NONE;
-
+    private final Project[] allProjects = Project.getAllProjects();
     /**
      * Dialog to create a new task
      */
     @Nullable
     public AlertDialog dialog = null;
-
+    //ViewModel
+    private TaskViewModel taskViewModel;
+    /**
+     * The sort method to be used to display tasks
+     */
+    @NonNull
+    private SortMethod sortMethod = SortMethod.NONE;
     /**
      * EditText that allows user to set the name of a task
      */
@@ -122,8 +112,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         configureViewModel();
         updateTasks();
     }
-    //Je configure le viewModel
-    private void configureViewModel(){
+
+    private void configureViewModel() {
 
         // On crée une instance de la base de données en utilisant la méthode getInstance pour obtenir une référence unique
         TodocDatabase db = TodocDatabase.getInstance(this);
@@ -167,8 +157,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        //tasks.remove(task);
-        /** delete task ok*/
         taskViewModel.deleteTask(task);
         updateTasks();
     }
@@ -196,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
             // If both project and name of the task have been set
             else if (taskProject != null) {
-                // TODO: Replace this by id of persisted task
+
                 long id = (long) (Math.random() * 50000);
 
 
@@ -212,11 +200,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 dialogInterface.dismiss();
             }
             // If name has been set, but project has not been set (this should never occur)
-            else{
+            else {
                 dialogInterface.dismiss();
             }
         }
-        // If dialog is aloready closed
+        // If dialog is already closed
         else {
             dialogInterface.dismiss();
         }
@@ -242,8 +230,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        //tasks.add(task);
-        /** INSERT TASK OK*/
         taskViewModel.createTask(task);
         updateTasks();
     }
@@ -253,31 +239,31 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     private void updateTasks() {
         taskViewModel.getTasks().observe(this, tasks -> {
-        // update UI
-        if (tasks.size() ==0) {
-            lblNoTasks.setVisibility(View.VISIBLE);
-            listTasks.setVisibility(View.GONE);
-        } else {
-            lblNoTasks.setVisibility(View.GONE);
-            listTasks.setVisibility(View.VISIBLE);
-            switch (sortMethod) {
-                case ALPHABETICAL:
-                    Collections.sort(tasks, new Task.TaskAZComparator());
-                    break;
-                case ALPHABETICAL_INVERTED:
-                    Collections.sort(tasks, new Task.TaskZAComparator());
-                    break;
-                case RECENT_FIRST:
-                    Collections.sort(tasks, new Task.TaskRecentComparator());
-                    break;
-                case OLD_FIRST:
-                case NONE:
-                    Collections.sort(tasks, new Task.TaskOldComparator());
-                    break;
+            // update UI
+            if (tasks.size() == 0) {
+                lblNoTasks.setVisibility(View.VISIBLE);
+                listTasks.setVisibility(View.GONE);
+            } else {
+                lblNoTasks.setVisibility(View.GONE);
+                listTasks.setVisibility(View.VISIBLE);
+                switch (sortMethod) {
+                    case ALPHABETICAL:
+                        Collections.sort(tasks, new Task.TaskAZComparator());
+                        break;
+                    case ALPHABETICAL_INVERTED:
+                        Collections.sort(tasks, new Task.TaskZAComparator());
+                        break;
+                    case RECENT_FIRST:
+                        Collections.sort(tasks, new Task.TaskRecentComparator());
+                        break;
+                    case OLD_FIRST:
+                    case NONE:
+                        Collections.sort(tasks, new Task.TaskOldComparator());
+                        break;
 
+                }
+                adapter.updateTasks(tasks);
             }
-            adapter.updateTasks(tasks);
-        }
         });
     }
 

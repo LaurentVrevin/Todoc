@@ -16,17 +16,11 @@ import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
 
-
-@Database(entities = { Project.class, Task.class}, version = 1, exportSchema = false)
+@Database(entities = {Project.class, Task.class}, version = 1, exportSchema = false)
 public abstract class TodocDatabase extends RoomDatabase {
 
     // SINGLETON
     private static volatile TodocDatabase INSTANCE;
-
-    // DAO
-    public abstract TaskDao taskDao();
-
-    public abstract ProjectDao projectDao();
 
     // INSTANCE
     public static TodocDatabase getInstance(Context context) {
@@ -55,7 +49,7 @@ public abstract class TodocDatabase extends RoomDatabase {
                 };
                 for (Project project : projects) {
 
-                    //On crée la database 1x (singleton)
+
                     ContentValues contentValues = new ContentValues();
                     contentValues.put("id", project.getId());
                     contentValues.put("name", project.getName());
@@ -65,4 +59,9 @@ public abstract class TodocDatabase extends RoomDatabase {
             }
         };
     }
+
+    // DAO
+    public abstract TaskDao taskDao();
+
+    public abstract ProjectDao projectDao();
 }

@@ -1,20 +1,6 @@
 package com.cleanup.todoc;
 
 
-import android.view.View;
-import android.widget.TextView;
-
-import com.cleanup.todoc.database.TodocDatabase;
-import com.cleanup.todoc.ui.MainActivity;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-
-import static androidx.test.InstrumentationRegistry.getContext;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
@@ -25,11 +11,20 @@ import static com.cleanup.todoc.TestUtils.withRecyclerView;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
+
+import com.cleanup.todoc.ui.MainActivity;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -49,6 +44,7 @@ public class MainActivityInstrumentedTest {
     public void initDb() throws Exception {
 
     }
+
     @After
     public void closeDB() throws Exception {
         rule.getActivity().getApplicationContext().deleteDatabase("TodocDatabase.db");
@@ -92,7 +88,6 @@ public class MainActivityInstrumentedTest {
         onView(withId(R.id.fab_add_task)).perform(click());
         onView(withId(R.id.txt_task_name)).perform(replaceText("hhh Tâche example"));
         onView(withId(android.R.id.button1)).perform(click());
-
 
 
         onView(withRecyclerView(R.id.list_tasks).atPositionOnView(0, R.id.lbl_task_name))

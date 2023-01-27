@@ -19,7 +19,7 @@ public class Project {
      * The unique identifier of the project
      */
     @PrimaryKey
-    @ColumnInfo(name="id")
+    @ColumnInfo(name = "id")
     private final long id;
 
     /**
@@ -27,7 +27,7 @@ public class Project {
      */
 
     @NonNull
-    @ColumnInfo(name="name")
+    @ColumnInfo(name = "name")
     private final String name;
 
     /**
@@ -35,7 +35,7 @@ public class Project {
      */
 
     @ColorInt
-    @ColumnInfo(name="color")
+    @ColumnInfo(name = "color")
     private final int color;
 
     /**

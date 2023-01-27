@@ -13,7 +13,7 @@ import java.util.List;
 
 @Dao
 public interface TaskDao {
-    //Récupère toutes les tasks via projectId
+
     @Query("SELECT * FROM Task WHERE projectId =:projectId")
     LiveData<List<Task>> getTaskByProject(long projectId);
 
@@ -23,9 +23,7 @@ public interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertTask(Task task);
 
-   @Delete
+    @Delete
     void deleteTask(Task task);
-
-
 
 }
