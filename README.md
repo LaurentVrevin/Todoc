@@ -10,7 +10,7 @@
 <p>○ si aucune t&acirc;che n&rsquo;est pr&eacute;sente, une illustration et un message (&ldquo;Tu n&rsquo;as aucune t&acirc;che &agrave; traiter&rdquo;) doivent appara&icirc;tre &agrave; l&rsquo;&eacute;cran.&nbsp;</p>
 <p>● Ajouter une t&acirc;che &agrave; r&eacute;aliser. Celle-ci devra &ecirc;tre assign&eacute;e &agrave; un projet au moment de sa cr&eacute;ation. Pour le moment, seulement 3 projets sont g&eacute;r&eacute;s : &ldquo;Projet Tartampion&rdquo;, &ldquo;Projet Lucidia&rdquo; et &ldquo;Projet Circus&rdquo;.&nbsp;</p>
 <p>● Supprimer une t&acirc;che &agrave; r&eacute;aliser.&nbsp;</p>
-<p>● Trier les t&acirc;ches,</p>
+<p>● Trier les t&acirc;ches</p>
 <h1 dir="auto"><strong>Pr&eacute;-requis</strong></h1>
 <p dir="auto">Cette application Andro&iuml;d fonctionne sur l'API 21 ou sup&eacute;rieur.</p>
 <p dir="auto">&nbsp;</p>
