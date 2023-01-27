@@ -16,8 +16,8 @@ public class TaskRepository {
     public LiveData<List<Task>> getTasks() {
         return this.taskDao.getTasks();
     }
-    /*public LiveData<List<Task>> getTaskByProject(long projectId){
-        return this.taskDao.getTaskByProject(projectId); }*/
+    public LiveData<List<Task>> getTaskByProject(long projectId){
+        return this.taskDao.getTaskByProject(projectId); }
 
     //CREATE
     public void createTask(Task task){
