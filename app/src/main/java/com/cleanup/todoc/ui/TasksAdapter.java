@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.repository.ProjectRepository;
 
 import java.util.List;
 
@@ -23,16 +24,19 @@ import java.util.List;
  */
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
     /**
+     * The listener for when a task needs to be deleted
+     */
+    @NonNull
+    private final DeleteTaskListener deleteTaskListener;
+    private ProjectRepository projectRepository;
+    /**
      * The list of tasks the adapter deals with
      */
     @NonNull
     private List<Task> tasks;
 
-    /**
-     * The listener for when a task needs to be deleted
-     */
     @NonNull
-    private final DeleteTaskListener deleteTaskListener;
+    private List<Project> projects;
 
 
     /**
@@ -54,6 +58,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         this.tasks = tasks;
         notifyDataSetChanged();
     }
+    public void updateProjects(List<Project> projects) {
+        this.projects = projects;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -71,6 +79,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     public int getItemCount() {
         return tasks.size();
     }
+
+
 
     /**
      * Listener for deleting tasks
@@ -118,7 +128,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         /**
          * Instantiates a new TaskViewHolder.
          *
-         * @param itemView the view of the task item
+         * @param itemView           the view of the task item
          * @param deleteTaskListener the listener for when a task needs to be deleted to set
          */
         TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener) {
@@ -141,7 +151,15 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 }
             });
         }
-
+        //Je retourne le projet associé à la tâche
+        //Pour chaque projet, je vérifie si les ID sont les bons id associés.
+        Project getCurrentProject(Task task, List<Project> projects){
+            for(Project project : projects){
+                if(project.getId() == task.getProjectId())
+                    return project;
+            }
+            return null;
+        }
         /**
          * Binds a task to the item view.
          *
@@ -151,7 +169,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             lblTaskName.setText(task.getName());
             imgDelete.setTag(task);
 
-            final Project taskProject = task.getProject();
+            Project taskProject = getCurrentProject(task, projects);
+
             if (taskProject != null) {
                 imgProject.setSupportImageTintList(ColorStateList.valueOf(taskProject.getColor()));
                 lblProjectName.setText(taskProject.getName());
@@ -159,7 +178,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 imgProject.setVisibility(View.INVISIBLE);
                 lblProjectName.setText("");
             }
-
         }
+
     }
 }
